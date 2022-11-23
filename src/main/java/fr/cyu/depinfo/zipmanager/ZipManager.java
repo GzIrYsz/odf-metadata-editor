@@ -18,10 +18,13 @@ public class ZipManager {
 
         fis = new FileInputStream(zipFile);
         zis = new ZipInputStream(fis);
-        ZipEntry ze = zis.getNextEntry();
-        while (ze != null) {
+        ZipEntry ze;
+        while ((ze = zis.getNextEntry()) != null) {
             String fileName = ze.getName();
             File newFile = new File(outDir + File.separator + fileName);
+            if (ze.isDirectory()) {
+                newFile.mkdirs();
+            }
             new File(newFile.getParent()).mkdirs();
             FileOutputStream fos = new FileOutputStream(newFile);
             int len;
@@ -30,7 +33,6 @@ public class ZipManager {
             }
             fos.close();
             zis.closeEntry();
-            ze = zis.getNextEntry();
         }
         zis.closeEntry();
         zis.close();
