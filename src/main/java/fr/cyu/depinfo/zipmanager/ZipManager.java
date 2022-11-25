@@ -24,6 +24,7 @@ public class ZipManager {
             File newFile = new File(outDir + File.separator + fileName);
             if (ze.isDirectory()) {
                 newFile.mkdirs();
+                continue;
             }
             new File(newFile.getParent()).mkdirs();
             FileOutputStream fos = new FileOutputStream(newFile);
@@ -37,5 +38,15 @@ public class ZipManager {
         zis.closeEntry();
         zis.close();
         fis.close();
+    }
+
+    public static void main(String[] args) {
+        File zipFile = new File("D:\\Users\\Thomas REMY\\Etudes\\odf-metadata-editor\\src\\main\\resources\\Modele_odt_projet.odt");
+        File outDir = new File("D:\\Users\\Thomas REMY\\Etudes\\odf-metadata-editor\\src\\main\\resources\\out");
+        try {
+            unzip(zipFile, outDir);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
