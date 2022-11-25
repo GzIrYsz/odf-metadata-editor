@@ -31,7 +31,7 @@ public class MetadataExtractor {
      * @return The title of the document.
      */
     public String getTitle() {
-        return parsedXML.getElementsByTagName("dc:title").item(0).getTextContent();
+        return parsedXML.getElementsByTagName(TITLE).item(0).getTextContent();
     }
 
     /**
@@ -40,7 +40,7 @@ public class MetadataExtractor {
      * @param title The new title of the document.
      */
     public void setTitle(String title) {
-        parsedXML.getElementsByTagName("dc:title").item(0).setTextContent(title);
+        parsedXML.getElementsByTagName(TITLE).item(0).setTextContent(title);
     }
 
     /**
@@ -50,7 +50,7 @@ public class MetadataExtractor {
      */
     public String getCreationDate() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        LocalDateTime creationDate = LocalDateTime.parse(parsedXML.getElementsByTagName("meta:creation-date").item(0).getTextContent());
+        LocalDateTime creationDate = LocalDateTime.parse(parsedXML.getElementsByTagName(CREATION_DATE).item(0).getTextContent());
         return creationDate.format(formatter);
     }
 
@@ -60,7 +60,7 @@ public class MetadataExtractor {
      * @return The author of the document.
      */
     public String getAuthor() {
-        return parsedXML.getElementsByTagName("meta:initial-creator").item(0).getTextContent();
+        return parsedXML.getElementsByTagName(AUTHOR).item(0).getTextContent();
     }
 
     /**
@@ -69,7 +69,7 @@ public class MetadataExtractor {
      * @param author The new author of the document.
      */
     public void setAuthor(String author) {
-        parsedXML.getElementsByTagName("meta:initial-creator").item(0).setTextContent(author);
+        parsedXML.getElementsByTagName(AUTHOR).item(0).setTextContent(author);
     }
 
     /**
@@ -78,7 +78,7 @@ public class MetadataExtractor {
      * @return The stats of the document.
      */
     public String getStats() {
-        NamedNodeMap nnm = parsedXML.getElementsByTagName("meta:document-statistic").item(0).getAttributes();
+        NamedNodeMap nnm = parsedXML.getElementsByTagName(STATISTICS).item(0).getAttributes();
         for (int i = 0; i < nnm.getLength(); i++) {
             System.out.println(nnm.item(i).getNodeName() + ": " + nnm.item(i).getNodeValue());
         }
