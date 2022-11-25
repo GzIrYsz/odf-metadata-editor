@@ -35,7 +35,7 @@ public class MetadataExtractor {
     }
 
     /**
-     * Change the title of the document.
+     * Changes the title of the document.
      *
      * @param title The new title of the document.
      */
@@ -55,6 +55,43 @@ public class MetadataExtractor {
     }
 
     /**
+     * Returns the description of the document.
+     *
+     * @return The description of the document.
+     */
+    public String getDescription() {
+        return parsedXML.getElementsByTagName(DESCRIPTION).item(0).getTextContent();
+    }
+
+
+    /**
+     * Changes the description of the document.
+     *
+     * @param description The new description of the document.
+     */
+    public void setDescription(String description) {
+        parsedXML.getElementsByTagName(DESCRIPTION).item(0).setTextContent(description);
+    }
+
+    /**
+     * Returns the subject of the document.
+     *
+     * @return The subject of the document.
+     */
+    public String getSubject() {
+        return parsedXML.getElementsByTagName(SUBJECT).item(0).getTextContent();
+    }
+
+    /**
+     * Changes the subject of the document.
+     *
+     * @param subject The new subject of the document.
+     */
+    public void setSubject(String subject) {
+        parsedXML.getElementsByTagName(SUBJECT).item(0).setTextContent(subject);
+    }
+
+    /**
      * Returns the author of the document.
      *
      * @return The author of the document.
@@ -64,7 +101,7 @@ public class MetadataExtractor {
     }
 
     /**
-     * Change the author of the document.
+     * Changes the author of the document.
      *
      * @param author The new author of the document.
      */
