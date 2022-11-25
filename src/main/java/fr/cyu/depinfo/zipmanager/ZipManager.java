@@ -41,8 +41,8 @@ public class ZipManager {
     }
 
     public static void main(String[] args) {
-        File zipFile = new File("D:\\Users\\Thomas REMY\\Etudes\\odf-metadata-editor\\src\\main\\resources\\Modele_odt_projet.odt");
-        File outDir = new File("D:\\Users\\Thomas REMY\\Etudes\\odf-metadata-editor\\src\\main\\resources\\out");
+        File zipFile = new File("D:\\Users\\Thomas\\Etudes\\odf-metadata-editor\\src\\main\\resources\\Test.odt");
+        File outDir = new File("D:\\Users\\Thomas\\Etudes\\odf-metadata-editor\\src\\main\\resources\\out");
         try {
             unzip(zipFile, outDir);
         } catch (IOException e) {
