@@ -3,7 +3,6 @@ package fr.cyu.depinfo.xmlprocessor;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
-import javax.print.Doc;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
