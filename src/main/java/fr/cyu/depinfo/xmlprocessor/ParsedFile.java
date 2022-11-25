@@ -1,13 +1,16 @@
 package fr.cyu.depinfo.xmlprocessor;
 
 import org.w3c.dom.*;
+import org.w3c.dom.bootstrap.DOMImplementationRegistry;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 /**
  * This class contains methods to get and set metadata from an XML file extracted from an ODT file.
@@ -53,6 +56,16 @@ public class ParsedFile {
         this.doc = doc;
     }
 
+    public String serialize(File out) throws Exception {
+        DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
+        DOMImplementationLS domImpl = (DOMImplementationLS) registry.getDOMImplementation("LS");
+        LSSerializer ser = domImpl.createLSSerializer();
+        BufferedWriter writer = new BufferedWriter(new FileWriter(out, StandardCharsets.UTF_8));
+        writer.write(ser.writeToString(doc));
+        writer.close();
+        return ser.writeToString(doc);
+    }
+
     /**
      * Main method to test the class. Needs to be moved.
      *
@@ -61,11 +74,10 @@ public class ParsedFile {
     public static void main(String[] args) {
         File meta = new File("D:\\Users\\Thomas\\Etudes\\odf-metadata-editor\\src\\main\\resources\\out\\meta.xml");
         ParsedFile parsedMeta = new ParsedFile(meta);
-//        System.out.println(parsedMeta.getTitle());
-//        System.out.println(parsedMeta.getStats());
-//        parsedMeta.setTitle("Remets un titre");
-//        System.out.println(parsedMeta.getTitle());
-//        parsedMeta.getStats();
-        System.out.println(parsedMeta.getCreationDate());
+        try {
+            System.out.println(parsedMeta.serialize(new File("D:\\Users\\Thomas\\Etudes\\odf-metadata-editor\\src\\main\\resources\\out\\test.xml")));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
