@@ -1,13 +1,16 @@
 package fr.cyu.depinfo.xmlprocessor;
 
 import org.w3c.dom.*;
+import org.w3c.dom.bootstrap.DOMImplementationRegistry;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 /**
  * This class contains methods to get and set metadata from an XML file extracted from an ODT file.
@@ -51,5 +54,15 @@ public class ParsedFile {
      */
     public void setDoc(Document doc) {
         this.doc = doc;
+    }
+
+    public String serialize(File out) throws Exception {
+        DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
+        DOMImplementationLS domImpl = (DOMImplementationLS) registry.getDOMImplementation("LS");
+        LSSerializer ser = domImpl.createLSSerializer();
+        BufferedWriter writer = new BufferedWriter(new FileWriter(out, StandardCharsets.UTF_8));
+        writer.write(ser.writeToString(doc));
+        writer.close();
+        return ser.writeToString(doc);
     }
 }
