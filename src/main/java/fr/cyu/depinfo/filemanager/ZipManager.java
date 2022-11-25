@@ -1,8 +1,10 @@
-package fr.cyu.depinfo.zipmanager;
+package fr.cyu.depinfo.filemanager;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 /**
  * The class contains static methods to unzip and zip a file.
@@ -24,7 +26,7 @@ public class ZipManager {
      */
     public static void unzip(File zipFile, File outDir) throws IOException {
         if (!outDir.exists()) {
-            outDir.mkdir();
+            outDir.mkdirs();
         }
 
         FileInputStream fis;
@@ -53,5 +55,22 @@ public class ZipManager {
         zis.closeEntry();
         zis.close();
         fis.close();
+    }
+
+    public static void zip(File dirToZip, File outDir) throws IOException {
+        ArrayList<File> filesInDir = new ArrayList<File>();
+
+
+        if (!outDir.exists()) {
+            outDir.mkdirs();
+        }
+
+        FileOutputStream fos;
+        ZipOutputStream zos;
+        byte[] buffer = new byte[BUFFER_SIZE];
+
+        fos = new FileOutputStream(outDir);
+        zos = new ZipOutputStream(fos);
+        ZipEntry ze;
     }
 }

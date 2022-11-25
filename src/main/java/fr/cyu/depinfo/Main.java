@@ -1,7 +1,7 @@
 package fr.cyu.depinfo;
 
 import fr.cyu.depinfo.xmlprocessor.*;
-import fr.cyu.depinfo.zipmanager.*;
+import fr.cyu.depinfo.filemanager.*;
 
 import java.io.File;
 import java.io.IOException;
