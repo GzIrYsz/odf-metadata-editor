@@ -52,20 +52,4 @@ public class ParsedFile {
     public void setDoc(Document doc) {
         this.doc = doc;
     }
-
-    /**
-     * Main method to test the class. Needs to be moved.
-     *
-     * @param args Nothing.
-     */
-    public static void main(String[] args) {
-        File meta = new File("D:\\Users\\Thomas\\Etudes\\odf-metadata-editor\\src\\main\\resources\\out\\meta.xml");
-        ParsedFile parsedMeta = new ParsedFile(meta);
-//        System.out.println(parsedMeta.getTitle());
-//        System.out.println(parsedMeta.getStats());
-//        parsedMeta.setTitle("Remets un titre");
-//        System.out.println(parsedMeta.getTitle());
-//        parsedMeta.getStats();
-        System.out.println(parsedMeta.getCreationDate());
-    }
 }
