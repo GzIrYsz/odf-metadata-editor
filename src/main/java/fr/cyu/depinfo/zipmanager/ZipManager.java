@@ -4,9 +4,24 @@ import java.io.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+/**
+ * The class contains static methods to unzip and zip a file.
+ *
+ * @author Thomas REMY
+ */
 public class ZipManager {
+    /**
+     * The size of the buffer.
+     */
     public static int BUFFER_SIZE = 1024;
 
+    /**
+     * Unzip a file.
+     *
+     * @param zipFile The file to unzip.
+     * @param outDir The output directory.
+     * @throws IOException TO DO
+     */
     public static void unzip(File zipFile, File outDir) throws IOException {
         if (!outDir.exists()) {
             outDir.mkdir();
@@ -38,15 +53,5 @@ public class ZipManager {
         zis.closeEntry();
         zis.close();
         fis.close();
-    }
-
-    public static void main(String[] args) {
-        File zipFile = new File("D:\\Users\\Thomas REMY\\Etudes\\odf-metadata-editor\\src\\main\\resources\\Modele_odt_projet.odt");
-        File outDir = new File("D:\\Users\\Thomas REMY\\Etudes\\odf-metadata-editor\\src\\main\\resources\\out");
-        try {
-            unzip(zipFile, outDir);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }
