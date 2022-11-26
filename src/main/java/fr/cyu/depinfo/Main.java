@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        File zipFile = new File("src/main/resources/Test.odt");
+        File zipFile = new File("src/main/resources/Modele_odt_projet.odt");
         File outDir = new File("src/main/resources/out");
         try {
             ZipManager.unzip(zipFile, outDir);
@@ -24,6 +24,7 @@ public class Main {
         try {
             parsedMeta.serialize(newMetaXML);
             ZipManager.zip(new File ("src/main/resources/out"), new File("src/main/resources/NewOdt.odt"));
+            FileManager.deleteDir(outDir, outDir.listFiles());
         } catch (Exception e) {
             e.printStackTrace();
         }

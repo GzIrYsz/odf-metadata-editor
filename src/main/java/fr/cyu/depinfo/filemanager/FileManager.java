@@ -21,4 +21,16 @@ public class FileManager {
         }
         return filesInDirApnd;
     }
+
+    public static void deleteDir(File dir, File[] files) {
+        for (File file : files) {
+            if (file.isDirectory()) {
+                deleteDir(file, file.listFiles());
+                file.delete();
+            } else {
+                file.delete();
+            }
+        }
+        dir.delete();
+    }
 }

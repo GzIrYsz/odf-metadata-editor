@@ -60,7 +60,7 @@ public class ParsedFile {
         DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
         DOMImplementationLS domImpl = (DOMImplementationLS) registry.getDOMImplementation("LS");
         LSSerializer ser = domImpl.createLSSerializer();
-        BufferedWriter writer = new BufferedWriter(new FileWriter(out, StandardCharsets.UTF_8));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(out, StandardCharsets.UTF_16));
         writer.write(ser.writeToString(doc));
         writer.close();
         return ser.writeToString(doc);
