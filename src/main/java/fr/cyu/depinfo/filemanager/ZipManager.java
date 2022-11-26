@@ -59,11 +59,7 @@ public class ZipManager {
 
     public static void zip(File dirToZip, File outDir) throws IOException {
         ArrayList<File> filesInDir = new ArrayList<File>();
-
-
-        if (!outDir.exists()) {
-            outDir.mkdirs();
-        }
+        filesInDir = FileManager.getAllFiles(dirToZip, filesInDir);
 
         FileOutputStream fos;
         ZipOutputStream zos;
@@ -71,6 +67,21 @@ public class ZipManager {
 
         fos = new FileOutputStream(outDir);
         zos = new ZipOutputStream(fos);
-        ZipEntry ze;
+
+        for (File file : filesInDir) {
+            ZipEntry ze = new ZipEntry(file.getCanonicalPath().substring(dirToZip.getCanonicalPath().length() + 1, file.getCanonicalPath().length()));
+            zos.putNextEntry(ze);
+            System.out.println("Zipping: " + file.getCanonicalPath().substring(dirToZip.getCanonicalPath().length() + 1, file.getCanonicalPath().length()));
+            FileInputStream fis = new FileInputStream(file);
+            int len;
+            while ((len = fis.read(buffer)) > 0) {
+                System.out.println(String.valueOf(len));
+                zos.write(buffer, 0, len);
+            }
+            zos.closeEntry();
+            fis.close();
+        }
+        zos.close();
+        fos.close();
     }
 }
