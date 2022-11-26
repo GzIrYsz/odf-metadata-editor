@@ -5,8 +5,8 @@ import java.nio.file.NotDirectoryException;
 import java.util.ArrayList;
 
 public class FileManager {
-    public static ArrayList<File> getAllFiles(File dir) throws NotDirectoryException {
-        ArrayList<File> filesInDir = new ArrayList<File>();
+    public static ArrayList<File> getAllFiles(File dir, ArrayList<File> filesInDir) throws NotDirectoryException {
+        ArrayList<File> filesInDirApnd = filesInDir;
 
         File[] files = dir.listFiles();
         if (files == null) {
@@ -14,11 +14,11 @@ public class FileManager {
         }
         for (File file : files) {
             if (file.isDirectory()) {
-                getAllFiles(file);
+                getAllFiles(file, filesInDir);
             } else {
-                filesInDir.add(file);
+                filesInDirApnd.add(file);
             }
         }
-        return filesInDir;
+        return filesInDirApnd;
     }
 }

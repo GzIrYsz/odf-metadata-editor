@@ -23,6 +23,7 @@ public class Main {
         meta.setTitle("NEW TITLE");
         try {
             parsedMeta.serialize(newMetaXML);
+            ZipManager.zip(new File ("src/main/resources/out"), new File("src/main/resources/NewOdt.odt"));
         } catch (Exception e) {
             e.printStackTrace();
         }
