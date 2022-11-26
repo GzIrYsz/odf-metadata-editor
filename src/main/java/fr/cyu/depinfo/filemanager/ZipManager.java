@@ -1,8 +1,10 @@
-package fr.cyu.depinfo.zipmanager;
+package fr.cyu.depinfo.filemanager;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 /**
  * The class contains static methods to unzip and zip a file.
@@ -24,7 +26,7 @@ public class ZipManager {
      */
     public static void unzip(File zipFile, File outDir) throws IOException {
         if (!outDir.exists()) {
-            outDir.mkdir();
+            outDir.mkdirs();
         }
 
         FileInputStream fis;
@@ -53,5 +55,33 @@ public class ZipManager {
         zis.closeEntry();
         zis.close();
         fis.close();
+    }
+
+    public static void zip(File dirToZip, File outDir) throws IOException {
+        ArrayList<File> filesInDir = new ArrayList<File>();
+        filesInDir = FileManager.getAllFiles(dirToZip, filesInDir);
+
+        FileOutputStream fos;
+        ZipOutputStream zos;
+        byte[] buffer = new byte[BUFFER_SIZE];
+
+        fos = new FileOutputStream(outDir);
+        zos = new ZipOutputStream(fos);
+
+        for (File file : filesInDir) {
+            ZipEntry ze = new ZipEntry(file.getCanonicalPath().substring(dirToZip.getCanonicalPath().length() + 1, file.getCanonicalPath().length()));
+            zos.putNextEntry(ze);
+            System.out.println("Zipping: " + file.getCanonicalPath().substring(dirToZip.getCanonicalPath().length() + 1, file.getCanonicalPath().length()));
+            FileInputStream fis = new FileInputStream(file);
+            int len;
+            while ((len = fis.read(buffer)) > 0) {
+                System.out.println(String.valueOf(len));
+                zos.write(buffer, 0, len);
+            }
+            zos.closeEntry();
+            fis.close();
+        }
+        zos.close();
+        fos.close();
     }
 }

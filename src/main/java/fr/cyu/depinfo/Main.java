@@ -1,7 +1,7 @@
 package fr.cyu.depinfo;
 
 import fr.cyu.depinfo.xmlprocessor.*;
-import fr.cyu.depinfo.zipmanager.*;
+import fr.cyu.depinfo.filemanager.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +23,7 @@ public class Main {
         meta.setTitle("NEW TITLE");
         try {
             parsedMeta.serialize(newMetaXML);
+            ZipManager.zip(new File ("src/main/resources/out"), new File("src/main/resources/NewOdt.odt"));
         } catch (Exception e) {
             e.printStackTrace();
         }
