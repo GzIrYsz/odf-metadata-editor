@@ -20,6 +20,7 @@ public class Main {
         ParsedFile parsedMeta = new ParsedFile(metaXML);
         MetadataExtractor meta = new MetadataExtractor(parsedMeta);
         System.out.println(meta.getTitle());
+        meta.getInfo(MetadataExtractor.SUBJECT);
         meta.setTitle("NEW TITLE");
         try {
             parsedMeta.serialize(newMetaXML);

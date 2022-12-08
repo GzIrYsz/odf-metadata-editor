@@ -121,4 +121,8 @@ public class MetadataExtractor {
         }
         return "";
     }
+
+    public void getInfo(String m) {
+        System.out.println(parsedXML.getElementsByTagName(m).getLength());
+    }
 }
