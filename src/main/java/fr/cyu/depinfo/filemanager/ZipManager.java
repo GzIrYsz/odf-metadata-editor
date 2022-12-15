@@ -70,6 +70,7 @@ public class ZipManager {
 
         for (File file : filesInDir) {
             ZipEntry ze = new ZipEntry(file.getCanonicalPath().substring(dirToZip.getCanonicalPath().length() + 1, file.getCanonicalPath().length()));
+            System.out.println(file.getCanonicalPath().substring(dirToZip.getCanonicalPath().length() + 1, file.getCanonicalPath().length()));
             zos.putNextEntry(ze);
             FileInputStream fis = new FileInputStream(file);
             int len;

@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        File zipFile = new File("src/main/resources/Modele_odt_projet.odt");
+        File zipFile = new File("src/main/resources/odt_test_file.odt");
         File outDir = new File("src/main/resources/out");
         try {
             ZipManager.unzip(zipFile, outDir);
@@ -16,14 +16,16 @@ public class Main {
             e.printStackTrace();
         }
         File metaXML = new File("src/main/resources/out/meta.xml");
-        File newMetaXML = new File("src/main/resources/out/meta.xml");
+        File contentXML = new File("src/main/resources/out/content.xml");
         ParsedFile parsedMeta = new ParsedFile(metaXML);
         MetadataExtractor meta = new MetadataExtractor(parsedMeta);
-        System.out.println(meta.getTitle());
-        meta.getInfo(MetadataExtractor.SUBJECT);
-        meta.setTitle("NEW TITLE");
+        ParsedFile parsedContent = new ParsedFile(contentXML);
+        MetadataExtractor content = new MetadataExtractor(parsedContent);
+        System.out.println(content.getTextContentByTagName(MetadataExtractor.HYPERLINK, MetadataExtractor.HYPERLINK_TARGET, true));
+        meta.setTextContentByTagName(MetadataExtractor.AUTHOR, "Thomas");
+        System.out.println(meta.getMainMeta());
         try {
-            parsedMeta.serialize(newMetaXML);
+            parsedMeta.serialize(metaXML);
             ZipManager.zip(new File ("src/main/resources/out"), new File("src/main/resources/NewOdt.odt"));
             FileManager.deleteDir(outDir, outDir.listFiles());
         } catch (Exception e) {
