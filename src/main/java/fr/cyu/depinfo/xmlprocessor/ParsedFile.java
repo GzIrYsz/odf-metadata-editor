@@ -3,6 +3,7 @@ package fr.cyu.depinfo.xmlprocessor;
 import org.w3c.dom.*;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSOutput;
 import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
@@ -10,7 +11,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 
 /**
  * This class contains methods to get and set metadata from an XML file extracted from an ODT file.
@@ -56,13 +56,26 @@ public class ParsedFile {
         this.doc = doc;
     }
 
-    public String serialize(File out) throws Exception {
+    /**
+     * Saves a parsed DOM Document into an .xml file.
+     *
+     * @param out The output file.
+     * @return The current object.
+     * @throws ClassNotFoundException If there's an issue when instantiating the registry.
+     * @throws InstantiationException If there's an issue when instantiating the registry.
+     * @throws IllegalAccessException If there's an issue when instantiating the registry.
+     * @throws IOException If there's an issue with the input/output operation.
+     */
+    public ParsedFile save(File out) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
         DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
         DOMImplementationLS domImpl = (DOMImplementationLS) registry.getDOMImplementation("LS");
         LSSerializer ser = domImpl.createLSSerializer();
-        BufferedWriter writer = new BufferedWriter(new FileWriter(out, StandardCharsets.UTF_16));
-        writer.write(ser.writeToString(doc));
-        writer.close();
-        return ser.writeToString(doc);
+        LSOutput output = domImpl.createLSOutput();
+        output.setEncoding("UTF-8");
+        FileOutputStream fos = new FileOutputStream(out);
+        output.setByteStream(fos);
+        ser.write(doc, output);
+        fos.close();
+        return this;
     }
 }

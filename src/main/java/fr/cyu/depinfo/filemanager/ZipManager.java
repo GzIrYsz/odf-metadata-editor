@@ -7,7 +7,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 /**
- * The class contains static methods to unzip and zip a file.
+ * This class contains static methods to unzip and zip a file.
  *
  * @author Thomas REMY
  */
@@ -22,7 +22,7 @@ public class ZipManager {
      *
      * @param zipFile The file to unzip.
      * @param outDir The output directory.
-     * @throws IOException TO DO
+     * @throws IOException If there's an exception.
      */
     public static void unzip(File zipFile, File outDir) throws IOException {
         if (!outDir.exists()) {
@@ -57,8 +57,15 @@ public class ZipManager {
         fis.close();
     }
 
+    /**
+     * Zip a file.
+     *
+     * @param dirToZip The directory to zip.
+     * @param outDir The output directory.
+     * @throws IOException If there's an exception.
+     */
     public static void zip(File dirToZip, File outDir) throws IOException {
-        ArrayList<File> filesInDir = new ArrayList<File>();
+        ArrayList<File> filesInDir = new ArrayList<>();
         filesInDir = FileManager.getAllFiles(dirToZip, filesInDir);
 
         FileOutputStream fos;
@@ -69,15 +76,21 @@ public class ZipManager {
         zos = new ZipOutputStream(fos);
 
         for (File file : filesInDir) {
-            ZipEntry ze = new ZipEntry(file.getCanonicalPath().substring(dirToZip.getCanonicalPath().length() + 1, file.getCanonicalPath().length()));
-            zos.putNextEntry(ze);
-            FileInputStream fis = new FileInputStream(file);
-            int len;
-            while ((len = fis.read(buffer)) > 0) {
-                zos.write(buffer, 0, len);
+            ZipEntry ze;
+            if (file.isDirectory()) {
+                ze = new ZipEntry(file.getCanonicalPath().substring(dirToZip.getCanonicalPath().length() + 1, file.getCanonicalPath().length()) + "/");
+                zos.putNextEntry(ze);
+            } else {
+                ze = new ZipEntry(file.getCanonicalPath().substring(dirToZip.getCanonicalPath().length() + 1, file.getCanonicalPath().length()));
+                zos.putNextEntry(ze);
+                FileInputStream fis = new FileInputStream(file);
+                int len;
+                while ((len = fis.read(buffer)) > 0) {
+                    zos.write(buffer, 0, len);
+                }
+                zos.closeEntry();
+                fis.close();
             }
-            zos.closeEntry();
-            fis.close();
         }
         zos.close();
         fos.close();
