@@ -15,17 +15,17 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        File metaXML = new File("src/main/resources/out/meta.xml");
-        File contentXML = new File("src/main/resources/out/content.xml");
-        ParsedFile parsedMeta = new ParsedFile(metaXML);
-        MetadataExtractor meta = new MetadataExtractor(parsedMeta);
-        ParsedFile parsedContent = new ParsedFile(contentXML);
-        MetadataExtractor content = new MetadataExtractor(parsedContent);
-        System.out.println(content.getTextContentByTagName(MetadataExtractor.HYPERLINK, MetadataExtractor.HYPERLINK_TARGET, true));
-        meta.setTextContentByTagName(MetadataExtractor.AUTHOR, "Thomas");
-        System.out.println(meta.getMainMeta());
+//        File metaXML = new File("src/main/resources/out/meta.xml");
+//        File contentXML = new File("src/main/resources/out/content.xml");
+//        ParsedFile parsedMeta = new ParsedFile(metaXML);
+//        MetadataExtractor meta = new MetadataExtractor(parsedMeta);
+//        ParsedFile parsedContent = new ParsedFile(contentXML);
+//        MetadataExtractor content = new MetadataExtractor(parsedContent);
+//        System.out.println(content.getTextContentByTagName(MetadataExtractor.HYPERLINK, MetadataExtractor.HYPERLINK_TARGET, true));
+//        meta.setTextContentByTagName(MetadataExtractor.AUTHOR, "Thomas");
+//        System.out.println(meta.getMainMeta());
         try {
-            parsedMeta.serialize(metaXML);
+//            parsedMeta.save(metaXML);
             ZipManager.zip(new File ("src/main/resources/out"), new File("src/main/resources/NewOdt.odt"));
             FileManager.deleteDir(outDir, outDir.listFiles());
         } catch (Exception e) {

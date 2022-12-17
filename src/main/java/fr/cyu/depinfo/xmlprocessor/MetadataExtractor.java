@@ -14,27 +14,104 @@ import java.time.format.DateTimeFormatter;
  * @author Thomas REMY
  */
 public class MetadataExtractor {
+    /**
+     * The separator used to print the multiple hyperlinks.
+     */
     public static String SEPARATOR = ", ";
+
+    /**
+     *
+     */
     public static final String META = "office:meta";
+
+    /**
+     * The title tag.
+     */
     public static final String TITLE = "dc:title";
+
+    /**
+     * The description tag.
+     */
     public static final String DESCRIPTION = "dc:description";
+
+    /**
+     * The subject tag.
+     */
     public static final String SUBJECT = "dc:subject";
+
+    /**
+     * The keyword tag.
+     */
     public static final String KEYWORD = "meta:keyword";
+
+    /**
+     * The initial creator tag.
+     */
     public static final String AUTHOR = "meta:initial-creator";
+
+    /**
+     * The creation date tag.
+     */
     public static final String CREATION_DATE = "meta:creation-date";
+
+    /**
+     * The document statistic tag.
+     */
     public static final String STATISTICS = "meta:document-statistic";
+
+    /**
+     * The table count tag.
+     */
     public static final String NB_TABLES = "meta:table-count";
+
+    /**
+     * The image count tag.
+     */
     public static final String NB_IMAGES = "meta:image-count";
+
+    /**
+     * The page count tag.
+     */
     public static final String NB_PAGES = "meta:page-count";
+
+    /**
+     * The paragraph count tag.
+     */
     public static final String NB_PARAGRAPHS = "meta:paragraph-count";
+
+    /**
+     * The word count tag.
+     */
     public static final String NB_WORDS = "meta:word-count";
+
+    /**
+     * The character count tag.
+     */
     public static final String NB_CHARACTERS = "meta:character-count";
+
+    /**
+     * The non whitespace character count tag.
+     */
     public static final String NB_NON_WHITESPACE_CHARACTERS = "meta:non-whitespace-character-count";
+
+    /**
+     * The hyperlink tag.
+     */
     public static final String HYPERLINK = "text:a";
+
+    /**
+     * The hyperlink target tag.
+     */
     public static final String HYPERLINK_TARGET = "xlink:href";
 
     private Document parsedXML;
 
+    /**
+     * Constructs a new MetadataExtractor from a ParsedFile
+     *
+     * @param f The ParsedFile
+     * @see ParsedFile
+     */
     public MetadataExtractor(ParsedFile f) {
         parsedXML = f.getDoc();
     }
@@ -49,6 +126,12 @@ public class MetadataExtractor {
         return (Element) parsedXML.getElementsByTagName(elementTagName).item(0);
     }
 
+    /**
+     * Returns a string containing all the text content of the given tag.
+     *
+     * @param elementTagName The tag name.
+     * @return A string containing all the text content of the tag given in parameter.a
+     */
     public String getTextContentByTagName(String elementTagName) {
         return this.getTextContentByTagName(elementTagName, null, false);
     }
@@ -73,6 +156,13 @@ public class MetadataExtractor {
         return output.toString();
     }
 
+    /**
+     * Modify the content of the given node.
+     *
+     * @param elementTagName The tag name of the element to modify.
+     * @param newTextContent The new content of the node.
+     * @return The current object.
+     */
     public MetadataExtractor setTextContentByTagName(String elementTagName, String newTextContent) {
         Element element = getFirstElementByTagName(elementTagName);
         if (element != null) {
@@ -100,8 +190,8 @@ public class MetadataExtractor {
      *
      * @param title The new title of the document.
      */
-    public void setTitle(String title) {
-        parsedXML.getElementsByTagName(TITLE).item(0).setTextContent(title);
+    public MetadataExtractor setTitle(String title) {
+        return setTextContentByTagName(TITLE, title);
     }
 
     /**
@@ -131,8 +221,8 @@ public class MetadataExtractor {
      *
      * @param description The new description of the document.
      */
-    public void setDescription(String description) {
-        parsedXML.getElementsByTagName(DESCRIPTION).item(0).setTextContent(description);
+    public MetadataExtractor setDescription(String description) {
+        return setTextContentByTagName(DESCRIPTION, description);
     }
 
     /**
@@ -149,8 +239,8 @@ public class MetadataExtractor {
      *
      * @param subject The new subject of the document.
      */
-    public void setSubject(String subject) {
-        parsedXML.getElementsByTagName(SUBJECT).item(0).setTextContent(subject);
+    public MetadataExtractor setSubject(String subject) {
+        return setTextContentByTagName(SUBJECT, subject);
     }
 
     /**
@@ -167,8 +257,8 @@ public class MetadataExtractor {
      *
      * @param author The new author of the document.
      */
-    public void setAuthor(String author) {
-        parsedXML.getElementsByTagName(AUTHOR).item(0).setTextContent(author);
+    public MetadataExtractor setAuthor(String author) {
+        return setTextContentByTagName(AUTHOR, author);
     }
 
     public String getNbTables() {
@@ -199,10 +289,8 @@ public class MetadataExtractor {
         return getTextContentByTagName(STATISTICS, NB_NON_WHITESPACE_CHARACTERS, true);
     }
 
-    public String getHyperlink() {
-        NodeList nl = parsedXML.getElementsByTagName(HYPERLINK);
-        Element hyperlink = (Element) nl.item(0);
-        return hyperlink.getAttribute(HYPERLINK_TARGET);
+    public String getHyperlinks() {
+        return getTextContentByTagName(HYPERLINK, HYPERLINK_TARGET, true);
     }
 
     public String getMainMeta() {
