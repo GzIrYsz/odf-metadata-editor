@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter;
  * @author Thomas REMY
  */
 public class MetadataExtractor {
+
     /**
      * The separator used to print the multiple hyperlinks.
      */

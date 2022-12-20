@@ -12,6 +12,7 @@ import java.util.zip.ZipOutputStream;
  * @author Thomas REMY
  */
 public class ZipManager {
+
     /**
      * The size of the buffer.
      */

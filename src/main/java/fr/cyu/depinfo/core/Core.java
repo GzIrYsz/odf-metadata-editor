@@ -4,8 +4,51 @@ import fr.cyu.depinfo.filemanager.*;
 import fr.cyu.depinfo.xmlprocessor.*;
 
 import java.io.File;
+import java.io.IOException;
 
 public class Core {
+    public static String OUTPUT_BASE_DIRECTORY_PATH = System.getProperty("java.io.tmpdir");
+
+    private File baseOutDir = new File(OUTPUT_BASE_DIRECTORY_PATH);
+    private File outDir;
+    private File odt;
+
+    public File getBaseOutDir() {
+        return this.baseOutDir;
+    }
+
+    public void setBaseOutDir(File baseOutDir) {
+        this.baseOutDir = baseOutDir;
+    }
+
+    public File getOutDir() {
+        return this.outDir;
+    }
+
+    public Core setOutDir() throws NullPointerException, IOException {
+        if (this.odt == null) {
+            throw new NullPointerException("odt file is not set");
+        } else {
+            this.outDir = new File(this.baseOutDir.getCanonicalPath() + File.separator + odt.getName());
+        }
+        return this;
+    }
+
+    public File getOdt() {
+        return this.odt;
+    }
+
+    public void setOdt(File odt) {
+        this.odt = odt;
+    }
+
+    public Core setOdtWPath(String path) throws IOException {
+        if (FileManager.isODT(path)) {
+            setOdt(new File(path));
+        }
+        return this;
+    }
+
     public static String getAllMetadata(String path) {
         return Core.getAllMetadata(new File(path));
     }
