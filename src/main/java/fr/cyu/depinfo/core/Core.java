@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class Core {
-    public static String OUTPUT_BASE_DIRECTORY_PATH = System.getProperty("java.io.tmpdir");
+    public static String OUTPUT_BASE_DIRECTORY_PATH = System.getProperty("java.io.tmpdir") + File.separator + "odf-metadata-editor";
 
     private File baseOutDir = new File(OUTPUT_BASE_DIRECTORY_PATH);
     private File outDir;
@@ -29,7 +29,7 @@ public class Core {
         if (this.odt == null) {
             throw new NullPointerException("odt file is not set");
         } else {
-            this.outDir = new File(this.baseOutDir.getCanonicalPath() + File.separator + odt.getName());
+            this.outDir = new File(this.baseOutDir.getCanonicalPath() + File.separator + odt.getName().substring(0, odt.getName().length() - 3));
         }
         return this;
     }

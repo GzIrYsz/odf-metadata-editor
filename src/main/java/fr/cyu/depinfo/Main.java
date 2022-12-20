@@ -26,7 +26,7 @@ public class Main {
 //        System.out.println(meta.getMainMeta());
         try {
 //            parsedMeta.save(metaXML);
-            ZipManager.zip(new File ("src/main/resources/out"), new File("src/main/resources/NewOdt.odt"));
+            ZipManager.zipDir(new File ("src/main/resources/out"), new File("src/main/resources/NewOdt.odt"));
             FileManager.deleteDir(outDir, outDir.listFiles());
         } catch (Exception e) {
             e.printStackTrace();

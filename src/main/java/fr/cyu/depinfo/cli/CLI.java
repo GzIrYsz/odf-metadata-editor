@@ -8,6 +8,9 @@ import picocli.CommandLine.Parameters;
 
 import fr.cyu.depinfo.core.Core;
 import fr.cyu.depinfo.filemanager.FileManager;
+import fr.cyu.depinfo.filemanager.ZipManager;
+import fr.cyu.depinfo.xmlprocessor.ParsedFile;
+import fr.cyu.depinfo.xmlprocessor.MetadataExtractor;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +41,15 @@ public class CLI implements Callable<Integer> {
 
         @Option(names = "--description", description = "The new description of the file.")
         private String description;
+
+        @Option(names = "--author", description = "The new author of the file.")
+        private String author;
+
+        @Option(names = "--subject", description = "The new subject of the file.")
+        private String subject;
+
+        @Option(names = "--keywords", description = "The new keywords of the file.")
+        private String keywords;
     }
 
     static class DependantDirOptions {
@@ -54,6 +66,11 @@ public class CLI implements Callable<Integer> {
         if (mc.dfo != null) {
             core.setOdtWPath(mc.dfo.odt);
             core.setOutDir();
+            ZipManager.unzip(new File(mc.dfo.odt), core.getOutDir());
+            ParsedFile pf = new ParsedFile(new File(core.getOutDir() + File.separator + "meta.xml"));
+            MetadataExtractor meta = new MetadataExtractor(pf);
+            System.out.println(meta.getMainMeta());
+            FileManager.deleteDir(core.getOutDir(), core.getOutDir().listFiles());
         } else if (mc.ddo != null) {
             ArrayList<File> odtFiles = new ArrayList<>();
             FileManager.getODTInDir(odtFiles, mc.ddo.dir, mc.ddo.recursive);

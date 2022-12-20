@@ -3,6 +3,7 @@ package fr.cyu.depinfo.filemanager;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -65,6 +66,9 @@ public class FileManager {
     }
 
     public static boolean isODT(File f) throws IOException {
+        if (!f.exists()) {
+            throw new NoSuchFileException(f.getCanonicalPath());
+        }
         Path path = f.toPath();
         String mimetype = Files.probeContentType(path);
         return mimetype != null && mimetype.equals(APPLICATION_VND_OASIS_OPENDOCUMENT_TEXT);
