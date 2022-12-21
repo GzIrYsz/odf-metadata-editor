@@ -18,3 +18,19 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
+
+jar {
+    manifest {
+        attributes "Main-Class": "fr.cyu.depinfo.cli.CLI"
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
