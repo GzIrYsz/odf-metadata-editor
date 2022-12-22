@@ -5,8 +5,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /**
  * This class contains methods to get and set metadata from a parsed XML file.
@@ -202,8 +204,13 @@ public class MetadataExtractor {
      */
     public String getCreationDate() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        LocalDateTime creationDate = LocalDateTime.parse(getTextContentByTagName(CREATION_DATE));
-        return creationDate.format(formatter);
+        try {
+            LocalDateTime creationDate = LocalDateTime.parse(getTextContentByTagName(CREATION_DATE));
+            return creationDate.format(formatter);
+        } catch (DateTimeParseException e) {
+            System.err.println("Format de date incorrect !");
+        }
+        return "";
     }
 
     /**

@@ -67,7 +67,7 @@ public class FileManager {
 
     public static boolean isODT(File f) throws IOException {
         if (!f.exists()) {
-            throw new NoSuchFileException(f.getCanonicalPath());
+            throw new NoSuchFileException(f.getCanonicalPath(), null, "Fichier non existant !");
         }
         Path path = f.toPath();
         String mimetype = Files.probeContentType(path);

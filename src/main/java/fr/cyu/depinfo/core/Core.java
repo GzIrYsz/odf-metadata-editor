@@ -1,7 +1,9 @@
 package fr.cyu.depinfo.core;
 
+import fr.cyu.depinfo.cli.CLI;
 import fr.cyu.depinfo.filemanager.*;
 import fr.cyu.depinfo.xmlprocessor.*;
+import fr.cyu.depinfo.cli.CLI.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,41 +14,18 @@ public class Core {
     private File baseOutDir = new File(OUTPUT_BASE_DIRECTORY_PATH);
     private File outDir;
     private File odt;
+    private File metaDotXML, contentDotXML;
+    private ParsedFile parsedMeta, parsedContent;
+    private MetadataExtractor metaExtractor, contentExtractor;
 
-    public File getBaseOutDir() {
-        return this.baseOutDir;
+    public String getMainMetadata() {
+        StringBuilder output = new StringBuilder();
+        return output.toString();
     }
 
-    public void setBaseOutDir(File baseOutDir) {
-        this.baseOutDir = baseOutDir;
-    }
-
-    public File getOutDir() {
-        return this.outDir;
-    }
-
-    public Core setOutDir() throws NullPointerException, IOException {
-        if (this.odt == null) {
-            throw new NullPointerException("odt file is not set");
-        } else {
-            this.outDir = new File(this.baseOutDir.getCanonicalPath() + File.separator + odt.getName().substring(0, odt.getName().length() - 3));
-        }
-        return this;
-    }
-
-    public File getOdt() {
-        return this.odt;
-    }
-
-    public void setOdt(File odt) {
-        this.odt = odt;
-    }
-
-    public Core setOdtWPath(String path) throws IOException {
-        if (FileManager.isODT(path)) {
-            setOdt(new File(path));
-        }
-        return this;
+    public String getStatisticsMetadata() {
+        StringBuilder output = new StringBuilder();
+        return output.toString();
     }
 
     public static String getAllMetadata(String path) {
@@ -65,5 +44,46 @@ public class Core {
 //        output.append("\nStatistiques : ").append(meta.getStats()).append("\n");
         output.append("\nDate de creation : ").append(meta.getCreationDate()).append("\n");
         return output.toString();
+    }
+
+    public File getBaseOutDir() {
+        return this.baseOutDir;
+    }
+
+    public void setBaseOutDir(File baseOutDir) {
+        this.baseOutDir = baseOutDir;
+    }
+
+    public File getOutDir() {
+        return this.outDir;
+    }
+
+    public Core generate(ModeChooser mc) throws NullPointerException, IOException {
+        if (mc.getDfo() != null) {
+            setOdtWPath(mc.getDfo().getOdt());
+            if (this.odt == null) {
+                throw new NullPointerException("odt file is not set");
+            } else {
+                this.outDir = new File(this.baseOutDir.getCanonicalPath() + File.separator + odt.getName().substring(0, odt.getName().length() - 3));
+            }
+        } else if (mc.getDdo() != null) {
+
+        }
+        return this;
+    }
+
+    public File getOdt() {
+        return this.odt;
+    }
+
+    public void setOdt(File odt) {
+        this.odt = odt;
+    }
+
+    public Core setOdtWPath(String path) throws IOException {
+        if (FileManager.isODT(path)) {
+            setOdt(new File(path));
+        }
+        return this;
     }
 }

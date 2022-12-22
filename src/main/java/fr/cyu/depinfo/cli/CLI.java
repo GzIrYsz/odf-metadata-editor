@@ -4,7 +4,8 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ArgGroup;
-import picocli.CommandLine.Parameters;
+import picocli.CommandLine.IExecutionExceptionHandler;
+import picocli.CommandLine.ParseResult;
 
 import fr.cyu.depinfo.core.Core;
 import fr.cyu.depinfo.filemanager.FileManager;
@@ -13,8 +14,7 @@ import fr.cyu.depinfo.xmlprocessor.ParsedFile;
 import fr.cyu.depinfo.xmlprocessor.MetadataExtractor;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
@@ -24,17 +24,28 @@ public class CLI implements Callable<Integer> {
     @ArgGroup(multiplicity = "1")
     ModeChooser mc;
 
-    static class ModeChooser {
+    public static class ModeChooser {
         @ArgGroup(exclusive = false)
-        DependantFileOptions dfo;
+        private DependantFileOptions dfo;
 
         @ArgGroup(exclusive = false)
-        DependantDirOptions ddo;
+        private DependantDirOptions ddo;
+
+        public DependantFileOptions getDfo() {
+            return this.dfo;
+        }
+
+        public DependantDirOptions getDdo() {
+            return this.ddo;
+        }
     }
 
-    static class DependantFileOptions {
+    public static class DependantFileOptions {
         @Option(names = {"-f", "--file"}, description = "The file to use.", required = true)
         private String odt;
+
+        @Option(names = {"-o", "--output"}, description = "The output file.")
+        private String out;
 
         @Option(names = "--title", description = "The new description of the file.")
         private String title;
@@ -50,9 +61,13 @@ public class CLI implements Callable<Integer> {
 
         @Option(names = "--keywords", description = "The new keywords of the file.")
         private String keywords;
+
+        public String getOdt() {
+            return this.odt;
+        }
     }
 
-    static class DependantDirOptions {
+    public static class DependantDirOptions {
         @Option(names = {"-d", "--dir", "--directory"}, description = "The directory to look in", required = true)
         private String dir;
 
@@ -63,15 +78,19 @@ public class CLI implements Callable<Integer> {
     @Override
     public Integer call() throws Exception {
         Core core = new Core();
-        if (mc.dfo != null) {
-            core.setOdtWPath(mc.dfo.odt);
-            core.setOutDir();
+        if (mc.dfo != null && mc.ddo == null) {
+//            try {
+                core.setOdtWPath(mc.dfo.odt);
+//            } catch (NoSuchFileException nsfe) {
+//                throw new Exception("Please verify the path !", nsfe);
+//            }
+            core.generate(mc);
             ZipManager.unzip(new File(mc.dfo.odt), core.getOutDir());
             ParsedFile pf = new ParsedFile(new File(core.getOutDir() + File.separator + "meta.xml"));
             MetadataExtractor meta = new MetadataExtractor(pf);
             System.out.println(meta.getMainMeta());
             FileManager.deleteDir(core.getOutDir(), core.getOutDir().listFiles());
-        } else if (mc.ddo != null) {
+        } else if (mc.ddo != null && mc.dfo == null) {
             ArrayList<File> odtFiles = new ArrayList<>();
             FileManager.getODTInDir(odtFiles, mc.ddo.dir, mc.ddo.recursive);
             for (File file : odtFiles) {
@@ -84,14 +103,18 @@ public class CLI implements Callable<Integer> {
     }
 
     public static void main(String... args) {
-//        Core core = new Core();
-//        try {
-//            core.setOdtWPath("src/main/resources/odt_test_file.odt");
-//            core.setOutDir();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-        int exitCode = new CommandLine(new CLI()).execute(args);
+        IExecutionExceptionHandler errorHandler = new IExecutionExceptionHandler() {
+            public int handleExecutionException(Exception ex,
+                                                CommandLine commandLine,
+                                                ParseResult parseResult) {
+                commandLine.getErr().println(ex.getMessage());
+                return commandLine.getCommandSpec().exitCodeOnExecutionException();
+            }
+        };
+
+        int exitCode = new CommandLine(new CLI())
+                .setExecutionExceptionHandler(errorHandler)
+                .execute(args);
         System.exit(exitCode);
     }
 }
