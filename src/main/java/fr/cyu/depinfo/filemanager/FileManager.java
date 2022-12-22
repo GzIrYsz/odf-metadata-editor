@@ -61,16 +61,27 @@ public class FileManager {
         dir.delete();
     }
 
-    public static boolean isODT(String path) throws IOException {
-        return isODT(new File(path));
+    public static boolean isODT(String path) throws IOException, NullPointerException {
+        File f;
+        try {
+            f = new File(path);
+        } catch (NullPointerException e) {
+            throw new NullPointerException("Le chemin vers le fichier .odt ne peut pas etre null !");
+        }
+        return isODT(f);
     }
 
     public static boolean isODT(File f) throws IOException {
-        if (!f.exists()) {
+        if (!f.exists() || f.isDirectory()) {
             throw new NoSuchFileException(f.getCanonicalPath(), null, "Fichier non existant !");
         }
         Path path = f.toPath();
-        String mimetype = Files.probeContentType(path);
+        String mimetype;
+        try {
+            mimetype = Files.probeContentType(path);
+        } catch (IOException e) {
+            throw new IOException("Une erreur est survenue lors de la verification du MIMETYPE !", e);
+        }
         return mimetype != null && mimetype.equals(APPLICATION_VND_OASIS_OPENDOCUMENT_TEXT);
     }
 

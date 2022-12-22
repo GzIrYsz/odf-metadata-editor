@@ -9,6 +9,7 @@ import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Date;
 
 /**
  * This class contains methods to get and set metadata from a parsed XML file.
@@ -203,14 +204,16 @@ public class MetadataExtractor {
      * @return The creation date and time of the document.
      */
     public String getCreationDate() {
+        StringBuilder output = new StringBuilder();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        String rawCreationDate = getTextContentByTagName(CREATION_DATE);
         try {
-            LocalDateTime creationDate = LocalDateTime.parse(getTextContentByTagName(CREATION_DATE));
-            return creationDate.format(formatter);
+            LocalDateTime creationDate = LocalDateTime.parse(rawCreationDate);
+            output.append(creationDate.format(formatter));
         } catch (DateTimeParseException e) {
-            System.err.println("Format de date incorrect !");
+            output.append(rawCreationDate);
         }
-        return "";
+        return output.toString();
     }
 
     /**
@@ -267,6 +270,10 @@ public class MetadataExtractor {
      */
     public MetadataExtractor setAuthor(String author) {
         return setTextContentByTagName(AUTHOR, author);
+    }
+
+    public String getKeywords() {
+        return getTextContentByTagName(KEYWORD);
     }
 
     public String getNbTables() {

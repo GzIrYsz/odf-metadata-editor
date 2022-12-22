@@ -79,16 +79,8 @@ public class CLI implements Callable<Integer> {
     public Integer call() throws Exception {
         Core core = new Core();
         if (mc.dfo != null && mc.ddo == null) {
-//            try {
-                core.setOdtWPath(mc.dfo.odt);
-//            } catch (NoSuchFileException nsfe) {
-//                throw new Exception("Please verify the path !", nsfe);
-//            }
             core.generate(mc);
-            ZipManager.unzip(new File(mc.dfo.odt), core.getOutDir());
-            ParsedFile pf = new ParsedFile(new File(core.getOutDir() + File.separator + "meta.xml"));
-            MetadataExtractor meta = new MetadataExtractor(pf);
-            System.out.println(meta.getMainMeta());
+            System.out.println(core.getAllMetadata());
             FileManager.deleteDir(core.getOutDir(), core.getOutDir().listFiles());
         } else if (mc.ddo != null && mc.dfo == null) {
             ArrayList<File> odtFiles = new ArrayList<>();

@@ -6,10 +6,16 @@ import fr.cyu.depinfo.xmlprocessor.*;
 import fr.cyu.depinfo.cli.CLI.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 
 public class Core {
     public static String OUTPUT_BASE_DIRECTORY_PATH = System.getProperty("java.io.tmpdir") + File.separator + "odf-metadata-editor";
+
+    public static String META = "meta.xml";
+    public static String CONTENT = "content.xml";
 
     private File baseOutDir = new File(OUTPUT_BASE_DIRECTORY_PATH);
     private File outDir;
@@ -20,29 +26,40 @@ public class Core {
 
     public String getMainMetadata() {
         StringBuilder output = new StringBuilder();
+        output.append("\nTitre : ").append(metaExtractor.getTitle()).append("\n");
+        output.append("\nDescription :\n").append(metaExtractor.getDescription()).append("\n");
+        output.append("\nSujet : ").append(metaExtractor.getSubject()).append("\n");
+        output.append("\nMots-cles : ").append(metaExtractor.getKeywords()).append("\n");
+        output.append("\nAuteur : ").append(metaExtractor.getAuthor()).append("\n");
         return output.toString();
     }
 
     public String getStatisticsMetadata() {
         StringBuilder output = new StringBuilder();
+        output.append("\nDate de creation : ").append(metaExtractor.getCreationDate()).append("\n");
+        output.append("Taille du fichier : ");
+        try {
+            output.append(Files.size(odt.toPath()) / 1024).append(" kB");
+        } catch (IOException e) {
+            output.append("Erreur, taille inconnue !");
+        }
+        output.append("\n");
+        output.append("\nNombre d'images : ").append(metaExtractor.getNbImages()).append("\n");
+        output.append("Nombre de pages : ").append(metaExtractor.getNbPages()).append("\n");
+        output.append("Nombre de paragraphes : ").append(metaExtractor.getNbParagraphs()).append("\n");
+        output.append("Nombre de mots : ").append(metaExtractor.getNbWords()).append("\n");
+        output.append("Nombre de caracteres : ").append(metaExtractor.getNbCharacters()).append("\n");
+        output.append("Nombre de caracteres non blancs : ").append(metaExtractor.getNbNonWhitespaceCharacters()).append("\n");
+        output.append("\nListe des liens hypertexte : ").append(contentExtractor.getHyperlinks()).append("\n");
         return output.toString();
     }
 
-    public static String getAllMetadata(String path) {
-        return Core.getAllMetadata(new File(path));
-    }
-
-    public static String getAllMetadata(File f) {
-        StringBuilder output = new StringBuilder("\n\n*** Metadonneees du fichier " + f.getName() + " ***\n\n");
-        ParsedFile parsedMeta = new ParsedFile(f);
-        MetadataExtractor meta = new MetadataExtractor(parsedMeta);
-        output.append("\nTitre : ").append(meta.getTitle()).append("\n");
-        output.append("\nAuteur : ").append(meta.getAuthor()).append("\n");
-        output.append("\nSujet : ").append(meta.getSubject()).append("\n");
-        output.append("\nDescription : ").append(meta.getDescription()).append("\n");
-        output.append("\nMots-cles : ").append("\n");
-//        output.append("\nStatistiques : ").append(meta.getStats()).append("\n");
-        output.append("\nDate de creation : ").append(meta.getCreationDate()).append("\n");
+    public String getAllMetadata() {
+        StringBuilder output = new StringBuilder();
+        output.append("\n\n***** Metadonnees principales *****").append("\n");
+        output.append(getMainMetadata());
+        output.append("\n\n***** Metadonnees secondaires et statistiques *****");
+        output.append(getStatisticsMetadata());
         return output.toString();
     }
 
@@ -58,16 +75,36 @@ public class Core {
         return this.outDir;
     }
 
+    public void setOutDir(File outDir) {
+        this.outDir = outDir;
+    }
+
+    public Core generateExtractors() throws NoSuchFileException {
+        try {
+            this.metaDotXML = new File(outDir.getCanonicalPath() + File.separator + META);
+            this.contentDotXML = new File(outDir.getCanonicalPath() + File.separator + CONTENT);
+        } catch (IOException e) {
+            throw new NoSuchFileException("Une erreur est survenue dans la construction du chemin d'acces absolu au fichier .odt !");
+        }
+        this.parsedMeta = new ParsedFile(metaDotXML);
+        this.parsedContent = new ParsedFile(contentDotXML);
+        this.metaExtractor = new MetadataExtractor(parsedMeta);
+        this.contentExtractor = new MetadataExtractor(parsedContent);
+        return this;
+    }
+
     public Core generate(ModeChooser mc) throws NullPointerException, IOException {
         if (mc.getDfo() != null) {
             setOdtWPath(mc.getDfo().getOdt());
             if (this.odt == null) {
-                throw new NullPointerException("odt file is not set");
+                throw new NullPointerException("An .odt file must be set before continuing !");
             } else {
-                this.outDir = new File(this.baseOutDir.getCanonicalPath() + File.separator + odt.getName().substring(0, odt.getName().length() - 3));
+                setOutDir(new File(this.baseOutDir.getCanonicalPath() + File.separator + odt.getName().substring(0, odt.getName().length() - 3)));
+                ZipManager.unzip(odt, outDir);
+                generateExtractors();
             }
         } else if (mc.getDdo() != null) {
-
+            System.err.println("Generator for directory content printer not yet implemented !");
         }
         return this;
     }
@@ -83,6 +120,8 @@ public class Core {
     public Core setOdtWPath(String path) throws IOException {
         if (FileManager.isODT(path)) {
             setOdt(new File(path));
+        } else {
+            throw new NoSuchFileException(path, null, "Ce n'est pas un fichier .odt !");
         }
         return this;
     }
