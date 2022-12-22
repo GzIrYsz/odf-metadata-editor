@@ -25,12 +25,43 @@ java {
     }
 }
 
-jar {
-    manifest {
-        attributes "Main-Class": "fr.cyu.depinfo.cli.CLI"
-    }
+//jar {
+//    manifest {
+//        attributes "Main-Class": "fr.cyu.depinfo.cli.CLI"
+//    }
+//
+//    from {
+//        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+//    }
+//}
 
+task createCLIJar(type: Jar) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    baseName = 'cli'
+    version = ''
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
+    with jar
+    manifest {
+        attributes 'Main-Class': 'fr.cyu.depinfo.cli.CLI'
+    }
+}
+
+task createGUIJar(type: Jar) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    baseName = 'gui'
+    version = ''
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+    manifest {
+        attributes 'Main-Class': 'fr.cyu.depinfo.gui.GUI'
+    }
+}
+
+task("createJars") {
+    dependsOn('createCLIJar')
+    dependsOn('createGUIJar')
 }
