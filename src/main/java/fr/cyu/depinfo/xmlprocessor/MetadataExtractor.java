@@ -168,6 +168,9 @@ public class MetadataExtractor {
      * @return The current object.
      */
     public MetadataExtractor setTextContentByTagName(String elementTagName, String newTextContent) {
+        if (newTextContent == null) {
+            return this;
+        }
         Element element = getFirstElementByTagName(elementTagName);
         if (element != null) {
             element.setTextContent(newTextContent);

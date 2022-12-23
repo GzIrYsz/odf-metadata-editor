@@ -9,14 +9,15 @@ import picocli.CommandLine.ParseResult;
 
 import fr.cyu.depinfo.core.Core;
 import fr.cyu.depinfo.filemanager.FileManager;
-import fr.cyu.depinfo.filemanager.ZipManager;
-import fr.cyu.depinfo.xmlprocessor.ParsedFile;
 import fr.cyu.depinfo.xmlprocessor.MetadataExtractor;
 
 import java.io.File;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.stream.Stream;
 
 @Command(name = "CLI", mixinStandardHelpOptions = true, description = "Print or modify the metata of an ODT file.")
 public class CLI implements Callable<Integer> {
@@ -65,6 +66,20 @@ public class CLI implements Callable<Integer> {
         public String getOdt() {
             return this.odt;
         }
+
+        public HashMap<String, String> getEditables() {
+            HashMap<String, String> output = new HashMap<>();
+            output.put(MetadataExtractor.TITLE, title);
+            output.put(MetadataExtractor.DESCRIPTION, description);
+            output.put(MetadataExtractor.AUTHOR, author);
+            output.put(MetadataExtractor.SUBJECT, subject);
+            output.put(MetadataExtractor.KEYWORD, keywords);
+            return output;
+        }
+
+        public boolean editableAreNull() {
+            return Stream.of(title, description, author, subject, keywords).allMatch(Objects::isNull);
+        }
     }
 
     public static class DependantDirOptions {
@@ -80,7 +95,12 @@ public class CLI implements Callable<Integer> {
         Core core = new Core();
         if (mc.dfo != null && mc.ddo == null) {
             core.generate(mc);
-            System.out.println(core.getAllMetadata());
+            if (mc.dfo.editableAreNull()) {
+                System.out.println(core.getAllMetadata());
+            } else {
+                core.setMetadata(mc.dfo.getEditables());
+                core.saveODT();
+            }
             FileManager.deleteDir(core.getOutDir(), core.getOutDir().listFiles());
         } else if (mc.ddo != null && mc.dfo == null) {
             ArrayList<File> odtFiles = new ArrayList<>();

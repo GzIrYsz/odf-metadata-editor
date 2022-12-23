@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
+import java.util.HashMap;
 
 public class Core {
     public static String OUTPUT_BASE_DIRECTORY_PATH = System.getProperty("java.io.tmpdir") + File.separator + "odf-metadata-editor";
@@ -19,7 +20,7 @@ public class Core {
 
     private File baseOutDir = new File(OUTPUT_BASE_DIRECTORY_PATH);
     private File outDir;
-    private File odt;
+    private File odt, outOdt;
     private File metaDotXML, contentDotXML;
     private ParsedFile parsedMeta, parsedContent;
     private MetadataExtractor metaExtractor, contentExtractor;
@@ -63,6 +64,21 @@ public class Core {
         return output.toString();
     }
 
+    public Core setMetadata(HashMap<String, String> editables) {
+        metaExtractor.setTextContentByTagName(MetadataExtractor.TITLE, editables.get(MetadataExtractor.TITLE));
+        metaExtractor.setTextContentByTagName(MetadataExtractor.DESCRIPTION, editables.get(MetadataExtractor.DESCRIPTION));
+        metaExtractor.setTextContentByTagName(MetadataExtractor.AUTHOR, editables.get(MetadataExtractor.AUTHOR));
+        metaExtractor.setTextContentByTagName(MetadataExtractor.SUBJECT, editables.get(MetadataExtractor.SUBJECT));
+        metaExtractor.setTextContentByTagName(MetadataExtractor.KEYWORD, editables.get(MetadataExtractor.KEYWORD));
+        return this;
+    }
+
+    public Core saveODT() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        parsedMeta.save(metaDotXML);
+        ZipManager.zipDir(outDir, outOdt);
+        return this;
+    }
+
     public File getBaseOutDir() {
         return this.baseOutDir;
     }
@@ -96,6 +112,7 @@ public class Core {
     public Core generate(ModeChooser mc) throws NullPointerException, IOException {
         if (mc.getDfo() != null) {
             setOdtWPath(mc.getDfo().getOdt());
+            outOdt = new File(odt.getCanonicalPath());
             if (this.odt == null) {
                 throw new NullPointerException("An .odt file must be set before continuing !");
             } else {
