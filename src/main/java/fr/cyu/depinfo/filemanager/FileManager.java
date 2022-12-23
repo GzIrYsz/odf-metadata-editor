@@ -2,7 +2,10 @@ package fr.cyu.depinfo.filemanager;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.NotDirectoryException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 /**
@@ -11,6 +14,9 @@ import java.util.ArrayList;
  * @author Thomas REMY
  */
 public class FileManager {
+
+    public static final String APPLICATION_VND_OASIS_OPENDOCUMENT_TEXT = "application/vnd.oasis.opendocument.text";
+
     /**
      * Returns a list of all the files and directory contained recursively in a directory.
      *
@@ -53,5 +59,60 @@ public class FileManager {
             }
         }
         dir.delete();
+    }
+
+    public static boolean isODT(String path) throws IOException, NullPointerException {
+        File f;
+        try {
+            f = new File(path);
+        } catch (NullPointerException e) {
+            throw new NullPointerException("Le chemin vers le fichier .odt ne peut pas etre null !");
+        }
+        return isODT(f);
+    }
+
+    public static boolean isODT(File f) throws IOException {
+        if (!f.exists() || f.isDirectory()) {
+            throw new NoSuchFileException(f.getCanonicalPath(), null, "Fichier non existant !");
+        }
+        Path path = f.toPath();
+        String mimetype;
+        try {
+            mimetype = Files.probeContentType(path);
+        } catch (IOException e) {
+            throw new IOException("Une erreur est survenue lors de la verification du MIMETYPE !", e);
+        }
+        return mimetype != null && mimetype.equals(APPLICATION_VND_OASIS_OPENDOCUMENT_TEXT);
+    }
+
+    public static void getODTInDir(ArrayList<File> odtFiles, String path, boolean recursive) throws IOException {
+        File dir = new File(path);
+        File[] files = dir.listFiles();
+//        if (recursive) {
+//            for (File file : files) {
+//                if (file.isDirectory()) {
+//                    getODTInDir(odtFiles, file.getCanonicalPath(), true);
+//                }
+//                if (isODT(file)) {
+//                    odtFiles.add(file);
+//                }
+//            }
+//        } else {
+//            for (File file : files) {
+//                if (isODT(file)) {
+//                    odtFiles.add(file);
+//                }
+//            }
+//        }
+        for (File file : files) {
+            if (recursive) {
+                if (file.isDirectory()) {
+                    getODTInDir(odtFiles, file.getCanonicalPath(), true);
+                }
+            }
+            if (isODT(file)) {
+                odtFiles.add(file);
+            }
+        }
     }
 }

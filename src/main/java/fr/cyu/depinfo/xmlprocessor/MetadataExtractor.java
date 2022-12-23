@@ -5,8 +5,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Date;
 
 /**
  * This class contains methods to get and set metadata from a parsed XML file.
@@ -14,6 +17,7 @@ import java.time.format.DateTimeFormatter;
  * @author Thomas REMY
  */
 public class MetadataExtractor {
+
     /**
      * The separator used to print the multiple hyperlinks.
      */
@@ -164,6 +168,9 @@ public class MetadataExtractor {
      * @return The current object.
      */
     public MetadataExtractor setTextContentByTagName(String elementTagName, String newTextContent) {
+        if (newTextContent == null) {
+            return this;
+        }
         Element element = getFirstElementByTagName(elementTagName);
         if (element != null) {
             element.setTextContent(newTextContent);
@@ -200,9 +207,16 @@ public class MetadataExtractor {
      * @return The creation date and time of the document.
      */
     public String getCreationDate() {
+        StringBuilder output = new StringBuilder();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        LocalDateTime creationDate = LocalDateTime.parse(getTextContentByTagName(CREATION_DATE));
-        return creationDate.format(formatter);
+        String rawCreationDate = getTextContentByTagName(CREATION_DATE);
+        try {
+            LocalDateTime creationDate = LocalDateTime.parse(rawCreationDate);
+            output.append(creationDate.format(formatter));
+        } catch (DateTimeParseException e) {
+            output.append(rawCreationDate);
+        }
+        return output.toString();
     }
 
     /**
@@ -259,6 +273,10 @@ public class MetadataExtractor {
      */
     public MetadataExtractor setAuthor(String author) {
         return setTextContentByTagName(AUTHOR, author);
+    }
+
+    public String getKeywords() {
+        return getTextContentByTagName(KEYWORD);
     }
 
     public String getNbTables() {
