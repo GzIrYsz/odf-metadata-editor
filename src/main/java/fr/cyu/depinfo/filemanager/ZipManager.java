@@ -118,8 +118,15 @@ public class ZipManager {
         fos.close();
     }
 
-    public static void zipDir(File dirToZip, File outDir) throws IOException {
-        FileOutputStream fos = new FileOutputStream(outDir);
+    /**
+     * Zip a directory.
+     *
+     * @param dirToZip The directory to zip.
+     * @param out The output file.
+     * @throws IOException If an I/O error occurs.
+     */
+    public static void zipDir(File dirToZip, File out) throws IOException {
+        FileOutputStream fos = new FileOutputStream(out);
         ZipOutputStream zos = new ZipOutputStream(fos);
         for (File file : dirToZip.listFiles()) {
             zipFile(file, file.getName(), zos);
@@ -128,6 +135,14 @@ public class ZipManager {
         fos.close();
     }
 
+    /**
+     * Zip a file.
+     *
+     * @param fileToZip The file to zip.
+     * @param fileName The name of the file.
+     * @param zos The stream used to create the zip file.
+     * @throws IOException If an I/O error occurs.
+     */
     public static void zipFile(File fileToZip, String fileName, ZipOutputStream zos) throws IOException {
         if (fileToZip.isHidden()) {
             return;

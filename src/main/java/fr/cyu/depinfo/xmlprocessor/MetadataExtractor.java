@@ -24,7 +24,7 @@ public class MetadataExtractor {
     public static String SEPARATOR = ", ";
 
     /**
-     *
+     * The main meta tag.
      */
     public static final String META = "office:meta";
 
@@ -134,11 +134,20 @@ public class MetadataExtractor {
      * Returns a string containing all the text content of the given tag.
      *
      * @param elementTagName The tag name.
-     * @return A string containing all the text content of the tag given in parameter.a
+     * @return A string containing all the text content of the tag given in parameter.
      */
     public String getTextContentByTagName(String elementTagName) {
         return this.getTextContentByTagName(elementTagName, null, false);
     }
+
+    /**
+     * Returns a string containing all the text content of the given tag.
+     *
+     * @param elementTagName The tag name.
+     * @param attributeName The attribute name if it is an attribute, anything otherwise.
+     * @param isAttribute {@code true} if it is an attribute, {@code false} otherwise.
+     * @return A string containing all the text content of the tag given in parameter.
+     */
     public String getTextContentByTagName(String elementTagName, String attributeName, boolean isAttribute) {
         NodeList nl = parsedXML.getElementsByTagName(elementTagName);
         StringBuilder output = new StringBuilder();
@@ -309,33 +318,5 @@ public class MetadataExtractor {
 
     public String getHyperlinks() {
         return getTextContentByTagName(HYPERLINK, HYPERLINK_TARGET, true);
-    }
-
-    public String getMainMeta() {
-        StringBuilder output = new StringBuilder();
-        output.append("\nTitre : ").append(getTitle());
-        output.append("\nAuteur : ").append(getAuthor());
-        output.append("\nDate de creation : ").append(getCreationDate());
-        output.append("\nSujet : ").append(getSubject());
-        output.append("\nDescription : ").append(getDescription());
-        output.append("\nMots-cles : ").append(getTextContentByTagName(KEYWORD));
-        return output.toString();
-    }
-
-    /**
-     * Returns all the statistics of the document.
-     *
-     * @return The statistics of the document.
-     */
-    public String getStatsMeta() {
-        StringBuilder output = new StringBuilder();
-        output.append("Nombre de tableaux : ").append(getNbTables());
-        output.append("Nombre d'images : ").append(getNbImages());
-        output.append("Nombre de pages : ").append(getNbPages());
-        output.append("Nombre de paragraphes : ").append(getNbParagraphs());
-        output.append("Nombre de mots : ").append(getNbWords());
-        output.append("Nombre de caracteres : ").append(getNbCharacters());
-        output.append("Nombre de caracteres non blanc : ").append(getNbNonWhitespaceCharacters());
-        return output.toString();
     }
 }
