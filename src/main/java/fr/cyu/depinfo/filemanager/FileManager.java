@@ -131,9 +131,14 @@ public class FileManager {
             if (recursive) {
                 if (file.isDirectory()) {
                     getODTInDir(odtFiles, file.getCanonicalPath(), true);
+                } else {
+                    if (isODT(file)) {
+                        odtFiles.add(file);
+                    }
                 }
-            }
-            if (isODT(file)) {
+            } else if (file.isDirectory()) {
+
+            } else if (isODT(file)) {
                 odtFiles.add(file);
             }
         }
