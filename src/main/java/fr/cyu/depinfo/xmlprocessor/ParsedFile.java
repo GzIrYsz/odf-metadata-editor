@@ -64,7 +64,7 @@ public class ParsedFile {
      * @throws ClassNotFoundException If there's an issue when instantiating the registry.
      * @throws InstantiationException If there's an issue when instantiating the registry.
      * @throws IllegalAccessException If there's an issue when instantiating the registry.
-     * @throws IOException If there's an issue with the input/output operation.
+     * @throws IOException If an I/O error occurs.
      */
     public ParsedFile save(File out) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
         DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();

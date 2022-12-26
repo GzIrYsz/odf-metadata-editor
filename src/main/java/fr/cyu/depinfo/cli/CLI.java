@@ -105,6 +105,9 @@ public class CLI implements Callable<Integer> {
         } else if (mc.ddo != null && mc.dfo == null) {
             ArrayList<File> odtFiles = new ArrayList<>();
             FileManager.getODTInDir(odtFiles, mc.ddo.dir, mc.ddo.recursive);
+            if (odtFiles.isEmpty()) {
+                System.out.println("Aucun fichier ODT present !");
+            }
             for (File file : odtFiles) {
                 System.out.println(file.getPath());
             }

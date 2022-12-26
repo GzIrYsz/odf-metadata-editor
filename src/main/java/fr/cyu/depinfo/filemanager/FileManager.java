@@ -61,6 +61,14 @@ public class FileManager {
         dir.delete();
     }
 
+    /**
+     * Checks if the file given in parameter is an odt.
+     *
+     * @param path The path to the file.
+     * @return {@code true} if the file is an odt, {@code false} otherwise.
+     * @throws IOException If an I/O error occurs.
+     * @throws NullPointerException If the path to the odt file is {@code null}.
+     */
     public static boolean isODT(String path) throws IOException, NullPointerException {
         File f;
         try {
@@ -71,6 +79,13 @@ public class FileManager {
         return isODT(f);
     }
 
+    /**
+     * Checks if the file given in parameter is an odt.
+     *
+     * @param f The file.
+     * @return {@code true} if the file is an odt, {@code false} otherwise.
+     * @throws IOException If an I/O error occurs.
+     */
     public static boolean isODT(File f) throws IOException {
         if (!f.exists() || f.isDirectory()) {
             throw new NoSuchFileException(f.getCanonicalPath(), null, "Fichier non existant !");
@@ -85,6 +100,14 @@ public class FileManager {
         return mimetype != null && mimetype.equals(APPLICATION_VND_OASIS_OPENDOCUMENT_TEXT);
     }
 
+    /**
+     * Gets a list of the odt files in a directory.
+     *
+     * @param odtFiles The list of the files.
+     * @param path The path of the directory.
+     * @param recursive {@code true} if you want to search recursively, {@code false} otherwise.
+     * @throws IOException If an I/O error occurs.
+     */
     public static void getODTInDir(ArrayList<File> odtFiles, String path, boolean recursive) throws IOException {
         File dir = new File(path);
         File[] files = dir.listFiles();
@@ -108,9 +131,14 @@ public class FileManager {
             if (recursive) {
                 if (file.isDirectory()) {
                     getODTInDir(odtFiles, file.getCanonicalPath(), true);
+                } else {
+                    if (isODT(file)) {
+                        odtFiles.add(file);
+                    }
                 }
-            }
-            if (isODT(file)) {
+            } else if (file.isDirectory()) {
+
+            } else if (isODT(file)) {
                 odtFiles.add(file);
             }
         }

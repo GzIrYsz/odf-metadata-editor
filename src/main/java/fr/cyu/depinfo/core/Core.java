@@ -12,10 +12,25 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.util.HashMap;
 
+/**
+ * This class represents the core of the CLI and the GUI.
+ *
+ * @author Thomas REMY
+ */
 public class Core {
+    /**
+     * The path to the output base directory.
+     */
     public static String OUTPUT_BASE_DIRECTORY_PATH = System.getProperty("java.io.tmpdir") + File.separator + "odf-metadata-editor";
 
+    /**
+     * The name of the file containing the main metadata.
+     */
     public static String META = "meta.xml";
+
+    /**
+     * The name of the file containing the content of the file.
+     */
     public static String CONTENT = "content.xml";
 
     private File baseOutDir = new File(OUTPUT_BASE_DIRECTORY_PATH);
@@ -25,6 +40,11 @@ public class Core {
     private ParsedFile parsedMeta, parsedContent;
     private MetadataExtractor metaExtractor, contentExtractor;
 
+    /**
+     * Returns a string reprentation of the main metadata.
+     *
+     * @return A string representation of the main metadata.
+     */
     public String getMainMetadata() {
         StringBuilder output = new StringBuilder();
         output.append("\nTitre : ").append(metaExtractor.getTitle()).append("\n");
@@ -35,6 +55,11 @@ public class Core {
         return output.toString();
     }
 
+    /**
+     * Returns a string representation of the statistics/secondary metadata.
+     *
+     * @return A string representation of the statistics metadata.
+     */
     public String getStatisticsMetadata() {
         StringBuilder output = new StringBuilder();
         output.append("\nDate de creation : ").append(metaExtractor.getCreationDate()).append("\n");
@@ -55,6 +80,11 @@ public class Core {
         return output.toString();
     }
 
+    /**
+     * Returns a concatenation of the main and secondary metadata.
+     *
+     * @return A string representation of all the metadata.
+     */
     public String getAllMetadata() {
         StringBuilder output = new StringBuilder();
         output.append("\n\n***** Metadonnees principales *****").append("\n");
@@ -64,6 +94,13 @@ public class Core {
         return output.toString();
     }
 
+    /**
+     * Changes the metadata of the parsed document.
+     * The metadata is kept the same as before if the object is {@code null}. Otherwise, it is set to the string in parameter.
+     *
+     * @param editables A dictionary containing the new metadata referenced by their tag in the document.
+     * @return The current object.
+     */
     public Core setMetadata(HashMap<String, String> editables) {
         metaExtractor.setTextContentByTagName(MetadataExtractor.TITLE, editables.get(MetadataExtractor.TITLE));
         metaExtractor.setTextContentByTagName(MetadataExtractor.DESCRIPTION, editables.get(MetadataExtractor.DESCRIPTION));
@@ -73,34 +110,61 @@ public class Core {
         return this;
     }
 
+    /**
+     * Save the parsed document into meta.xml and zip back the odt file.
+     *
+     * @return The current object.
+     * @throws IOException If an I/O error occurs.
+     * @throws ClassNotFoundException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
     public Core saveODT() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         parsedMeta.save(metaDotXML);
         ZipManager.zipDir(outDir, outOdt);
         return this;
     }
 
+    /**
+     * @return The base output directory.
+     */
     public File getBaseOutDir() {
         return this.baseOutDir;
     }
 
+    /**
+     * @param baseOutDir The new base output directory.
+     */
     public void setBaseOutDir(File baseOutDir) {
         this.baseOutDir = baseOutDir;
     }
 
+    /**
+     * @return The output directory.
+     */
     public File getOutDir() {
         return this.outDir;
     }
 
+    /**
+     * @param outDir The new output directory.
+     */
     public void setOutDir(File outDir) {
         this.outDir = outDir;
     }
 
+    /**
+     * Generate the attributes needed to extract all the metadata.
+     *
+     * @return The current object.
+     * @throws NoSuchFileException If an error occurs while getting the path to the output directory.
+     */
     public Core generateExtractors() throws NoSuchFileException {
         try {
             this.metaDotXML = new File(outDir.getCanonicalPath() + File.separator + META);
             this.contentDotXML = new File(outDir.getCanonicalPath() + File.separator + CONTENT);
         } catch (IOException e) {
-            throw new NoSuchFileException("Une erreur est survenue dans la construction du chemin d'acces absolu au fichier .odt !");
+            throw new NoSuchFileException("Une erreur est survenue dans la construction du chemin d'acces absolu au dossier de sortie !");
         }
         this.parsedMeta = new ParsedFile(metaDotXML);
         this.parsedContent = new ParsedFile(contentDotXML);
@@ -109,6 +173,14 @@ public class Core {
         return this;
     }
 
+    /**
+     * Generate the files and attributes to perform an extraction.
+     *
+     * @param mc The mode chose in the CLI. It contains all the parameters, accessible by getters.
+     * @return The current object.
+     * @throws NullPointerException If no odt file was set before.
+     * @throws IOException If an I/O error occurs.
+     */
     public Core generate(ModeChooser mc) throws NullPointerException, IOException {
         if (mc.getDfo() != null) {
             setOdtWPath(mc.getDfo().getOdt());
@@ -126,14 +198,27 @@ public class Core {
         return this;
     }
 
+    /**
+     * @return The odt file.
+     */
     public File getOdt() {
         return this.odt;
     }
 
+    /**
+     * @param odt The new odt file.
+     */
     public void setOdt(File odt) {
         this.odt = odt;
     }
 
+    /**
+     * Sets the odt with his path.
+     *
+     * @param path The path to the odt file.
+     * @return The current object.
+     * @throws IOException If an I/O error occurs.
+     */
     public Core setOdtWPath(String path) throws IOException {
         if (FileManager.isODT(path)) {
             setOdt(new File(path));
