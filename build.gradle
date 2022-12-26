@@ -1,0 +1,67 @@
+plugins {
+    id 'java'
+}
+
+group 'fr.cyu.depinfo'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation 'info.picocli:picocli:4.7.0'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
+
+//jar {
+//    manifest {
+//        attributes "Main-Class": "fr.cyu.depinfo.cli.CLI"
+//    }
+//
+//    from {
+//        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+//    }
+//}
+
+task createCLIJar(type: Jar) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    baseName = 'cli'
+    version = ''
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+    manifest {
+        attributes 'Main-Class': 'fr.cyu.depinfo.cli.CLI'
+    }
+}
+
+task createGUIJar(type: Jar) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    baseName = 'gui'
+    version = ''
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+    manifest {
+        attributes 'Main-Class': 'fr.cyu.depinfo.gui.GUI'
+    }
+}
+
+task("createJars") {
+    dependsOn('createCLIJar')
+    dependsOn('createGUIJar')
+}
