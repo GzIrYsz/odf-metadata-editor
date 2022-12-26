@@ -98,7 +98,7 @@ $ java -jar ./build/libs/cli.jar -d="."
 
 Sortie :
 ```
-D:\Users\Example\odf-metadata-editor\.git: Fichier non existant !
+Aucun fichier ODT present !
 ```
 
 - Affichage des fichiers OpenDocument Text présents dans un répertoire (de manière récursive) :
@@ -108,8 +108,8 @@ $ java -jar ./build/libs/cli.jar -rd="."
 
 Sortie :
 ```
-.\src\test\resources\testFile1.odt
-.\src\test\resources\testFile2.odt
+D:\Users\Thomas\Etudes\odf-metadata-editor\src\test\resources\testFile1.odt
+D:\Users\Thomas\Etudes\odf-metadata-editor\src\test\resources\testFile2.odt
 ```
 
 ## Auteurs
