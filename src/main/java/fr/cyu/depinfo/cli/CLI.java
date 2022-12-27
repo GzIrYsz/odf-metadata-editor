@@ -42,25 +42,25 @@ public class CLI implements Callable<Integer> {
     }
 
     public static class DependantFileOptions {
-        @Option(names = {"-f", "--file"}, description = "The file to use.", required = true)
+        @Option(names = {"-f", "--file", "--fichier"}, description = "The file to use.", required = true)
         private String odt;
 
-        @Option(names = {"-o", "--output"}, description = "The output file.")
+        @Option(names = {"-o", "--output", "--sortie"}, description = "The output file.")
         private String out;
 
-        @Option(names = "--title", description = "The new description of the file.")
+        @Option(names = {"--title", "--titre"}, description = "The new description of the file.")
         private String title;
 
         @Option(names = "--description", description = "The new description of the file.")
         private String description;
 
-        @Option(names = "--author", description = "The new author of the file.")
+        @Option(names = {"--author", "--auteur"}, description = "The new author of the file.")
         private String author;
 
-        @Option(names = "--subject", description = "The new subject of the file.")
+        @Option(names = {"--subject", "--sujet"}, description = "The new subject of the file.")
         private String subject;
 
-        @Option(names = "--keywords", description = "The new keywords of the file.")
+        @Option(names = {"--keywords", "--motcles"}, description = "The new keywords of the file.")
         private String keywords;
 
         public String getOdt() {
@@ -83,10 +83,10 @@ public class CLI implements Callable<Integer> {
     }
 
     public static class DependantDirOptions {
-        @Option(names = {"-d", "--dir", "--directory"}, description = "The directory to look in", required = true)
+        @Option(names = {"-d", "--dir", "--directory", "--repertoire", "--dossier"}, description = "The directory to look in", required = true)
         private String dir;
 
-        @Option(names = {"-r", "--recursive"}, description = "Look into the directory recusively.")
+        @Option(names = {"-r", "--recursive", "--recursif"}, description = "Look into the directory recusively.")
         private boolean recursive;
     }
 
@@ -112,7 +112,7 @@ public class CLI implements Callable<Integer> {
                 System.out.println(file.getPath());
             }
         } else {
-            throw new Exception("fsdsdffd");
+            throw new Exception("Erreur !");
         }
         return 0;
     }
