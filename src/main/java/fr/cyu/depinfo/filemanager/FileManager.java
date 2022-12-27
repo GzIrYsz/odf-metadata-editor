@@ -127,20 +127,24 @@ public class FileManager {
 //                }
 //            }
 //        }
-        for (File file : files) {
-            if (recursive) {
-                if (file.isDirectory()) {
-                    getODTInDir(odtFiles, file.getCanonicalPath(), true);
-                } else {
-                    if (isODT(file)) {
-                        odtFiles.add(file);
+        try {
+            for (File file : files) {
+                if (recursive) {
+                    if (file.isDirectory()) {
+                        getODTInDir(odtFiles, file.getCanonicalPath(), true);
+                    } else {
+                        if (isODT(file)) {
+                            odtFiles.add(file);
+                        }
                     }
-                }
-            } else if (file.isDirectory()) {
+                } else if (file.isDirectory()) {
 
-            } else if (isODT(file)) {
-                odtFiles.add(file);
+                } else if (isODT(file)) {
+                    odtFiles.add(file);
+                }
             }
+        } catch (NullPointerException e) {
+            throw new NullPointerException("Erreur lors de la recherche de fichiers !");
         }
     }
 }
