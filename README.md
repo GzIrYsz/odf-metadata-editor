@@ -1,5 +1,7 @@
 # odf-metadata-editor
 
+![workflow-gradle](https://github.com/mipi-and-co/odf-metadata-editor/actions/workflows/gradle.yml/badge.svg)
+
 Ce projet est réalisé par [@Thomas REMY](https://github.com/GzIrYsz) et [@Farah ALIANE](https://github.com/farah951). C'est une mise en pratique
 des connaissances acquises dans le cadre de l'UE Programmation Orientée Objet & Java
 en deuxième année de licence informatique à CY Université.
