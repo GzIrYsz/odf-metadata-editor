@@ -33,9 +33,23 @@ public class Core {
      */
     public static String CONTENT = "content.xml";
 
+    /**
+     * The name of the thumbnail image.
+     */
+    public static String THUMBNAIL_IMAGE = "thumbnail.png";
+
+    /**
+     * The name of the thumbnail folder.
+     */
+    public static String THUMBNAILS_FOLDER = "Thumbnails";
+
+    public static String PICTURES_FOLDER = "Pictures";
+
     private File baseOutDir = new File(OUTPUT_BASE_DIRECTORY_PATH);
     private File outDir;
     private File odt, outOdt;
+    private File picturesDir;
+    private File thumbnail;
     private File metaDotXML, contentDotXML;
     private ParsedFile parsedMeta, parsedContent;
     private MetadataExtractor metaExtractor, contentExtractor;
@@ -71,6 +85,17 @@ public class Core {
         }
         output.append("\n");
         output.append("\nNombre d'images : ").append(metaExtractor.getNbImages()).append("\n");
+        if (picturesDir.exists()) {
+            for (File file : picturesDir.listFiles()) {
+                output.append("\t").append(file.getName()).append(", ");
+                try {
+                    output.append(Files.size(file.toPath()) / 1024).append(" kB");
+                } catch (IOException e) {
+                    output.append("Taille non connue");
+                }
+                output.append("\n");
+            }
+        }
         output.append("Nombre de pages : ").append(metaExtractor.getNbPages()).append("\n");
         output.append("Nombre de paragraphes : ").append(metaExtractor.getNbParagraphs()).append("\n");
         output.append("Nombre de mots : ").append(metaExtractor.getNbWords()).append("\n");
@@ -106,7 +131,7 @@ public class Core {
         metaExtractor.setTextContentByTagName(MetadataExtractor.DESCRIPTION, editables.get(MetadataExtractor.DESCRIPTION));
         metaExtractor.setTextContentByTagName(MetadataExtractor.AUTHOR, editables.get(MetadataExtractor.AUTHOR));
         metaExtractor.setTextContentByTagName(MetadataExtractor.SUBJECT, editables.get(MetadataExtractor.SUBJECT));
-        metaExtractor.setTextContentByTagName(MetadataExtractor.KEYWORD, editables.get(MetadataExtractor.KEYWORD));
+        metaExtractor.setKeywords(editables.get(MetadataExtractor.KEYWORD));
         return this;
     }
 
@@ -191,6 +216,8 @@ public class Core {
                 setOutDir(new File(this.baseOutDir.getCanonicalPath() + File.separator + odt.getName().substring(0, odt.getName().length() - 3)));
                 ZipManager.unzip(odt, outDir);
                 generateExtractors();
+                thumbnail = new File(outDir + File.separator + THUMBNAILS_FOLDER + File.separator + THUMBNAIL_IMAGE);
+                picturesDir = new File(outDir + File.separator + PICTURES_FOLDER);
             }
         } else if (mc.getDdo() != null) {
             System.err.println("Generator for directory content printer not yet implemented !");
