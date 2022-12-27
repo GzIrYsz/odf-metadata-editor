@@ -35,6 +35,13 @@ $ java -jar ./build/libs/gui.jar
 $ java -jar ./cli.jar
 ```
 
+## Documentation
+
+La documentation peut être obtenue à partir des sources grâce à la commande suivante :
+```bash
+$ ./gradlew javadoc
+```
+
 ## Utilisation
 
 - L'affichage de l'aide est possible à tout moment avec la commande suivante :
