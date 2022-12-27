@@ -12,13 +12,17 @@ import fr.cyu.depinfo.filemanager.FileManager;
 import fr.cyu.depinfo.xmlprocessor.MetadataExtractor;
 
 import java.io.File;
-import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
+/**
+ * This is the main class used for the Command Line Interface
+ *
+ * @author Thomas REMY
+ */
 @Command(name = "CLI", mixinStandardHelpOptions = true, description = "Print or modify the metata of an ODT file.")
 public class CLI implements Callable<Integer> {
 
