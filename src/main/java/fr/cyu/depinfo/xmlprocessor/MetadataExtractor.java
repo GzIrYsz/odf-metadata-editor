@@ -192,6 +192,14 @@ public class MetadataExtractor {
         return this;
     }
 
+    public MetadataExtractor removeNodesByTagName(String tagName) {
+        NodeList nl = parsedXML.getElementsByTagName(tagName);
+        while (nl.getLength() > 0) {
+            nl.item(0).getParentNode().removeChild(nl.item(0));
+        }
+        return this;
+    }
+
     /**
      * Returns the title of the document.
      *
@@ -286,6 +294,20 @@ public class MetadataExtractor {
 
     public String getKeywords() {
         return getTextContentByTagName(KEYWORD);
+    }
+    public MetadataExtractor setKeywords(String keywords) {
+        if (keywords == null) {
+            return this;
+        }
+        removeNodesByTagName(KEYWORD);
+        String[] keywordsList = keywords.split(",");
+        for (String keyword : keywordsList) {
+            Element meta = getFirstElementByTagName(META);
+            Element newElement = parsedXML.createElement(KEYWORD);
+            newElement.setTextContent(keyword);
+            meta.appendChild(newElement);
+        }
+        return this;
     }
 
     public String getNbTables() {
